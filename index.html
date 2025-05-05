@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mantela Fetch</title>
+<script src="./fetch.js" defer></script>
+<script src="./index.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
+<style>
+.fill-inline {
+	box-sizing: border-box;
+	width: 100%;
+}
+</style>
+</head>
+<body>
+<header>
+<h1>Mantela Fetcher</h1>
+</header>
+<main>
+<section>
+<h2><code>fetchMantela()</code> について</h2>
+<p>
+<code>fetchMantela()</code> は、<a href="https://github.com/tkytel/mantela">Mantela</a> で記述された電話局同士のつながりを一括で効率的に取得するための関数です。
+</p>
+<section>
+<h3>構文</h3>
+<pre><code>fetchMantela(firstMantela)
+fetchMantela(firstMantela, maxNest)</code></pre>
+</section>
+<section>
+<h3>引数</h3>
+<dl>
+<dt><code>firstMantela</code></dt>
+<dd><p>
+電話網の起点となる Mantela を指定します。
+文字列や文字列化できるオブジェクト、あるいは <code>Request</code> オブジェクトを使用できます。
+</p></dd>
+<dt><code>maxNest</code>（省略可）</dt>
+<dd><p>
+Mantela を辿る最大深さを指定します。
+非負の値を指定できます。
+省略された場合、<code>Infinity</code> が指定されます。
+</p></dd>
+</dl>
+</section>
+<section>
+<h3>返却値</h3>
+<p>
+<code>Promise</code> です。
+それぞれの Mantela の <code>aboutMe.identifier</code> をキーに持ち、オブジェクト化された Mantela それ自体を値に持つ <code>Map</code> に解決します。
+</p>
+</section>
+<section>
+<h3>例外</h3>
+<dl>
+<dt><code>RangeError</code></dt>
+<dd><p>
+引数 <code>maxNest</code> が負であるときに生起します。
+</p></dd>
+</dl>
+</section>
+</section>
+<section>
+<h2>動作例</h2>
+<form id="formMantela">
+<fieldset>
+<legend>初期設定</legend>
+<div>
+<label for="urlMantela">firstMantela</label>
+<input type="url" id="urlMantela" name="first" required class="fill-inline">
+</div>
+<div>
+<label for="checkNest">maxNest を指定する:</label>
+<input type="checkbox" id="checkNest">
+</div>
+<div>
+<label for="numNest">maxNest:</label>
+<input type="number" id="numNest" min="0" step="1" class="fill-inline">
+</div>
+<hr>
+<div>
+<input type="submit" id="btnGenerate" value="Mantela を取得..." class="fill-inline">
+</div>
+<div>
+<output id="outputStatus"></output>
+</div>
+</fieldset>
+</form>
+<h3>取得結果</h3>
+<dl id="outputList">
+</dl>
+</section>
+</main>
+</body>
+</html>
