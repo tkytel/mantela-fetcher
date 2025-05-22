@@ -1,14 +1,15 @@
 'use strict';
 
+
 /**
  * Mantela を芋蔓式に取得する
  * @param { string | URL | Request } firstMantela - 起点となる Mantela
  * @param { number } [maxNest = Infinity] - Mantela を辿る最大深さ
  */
 async function
-fetchMantelas(firstMantela, maxNest = Infinity)
+fetchMantelas2(firstMantela, maxNest = Infinity)
 {
-    /** @type { Map<string, Mantela> } */
+    /** @type { Map<string, { mantela: Mantela }> } */
     const mantelas = new Map();
 
     /** @type { Set<string | URL | Request> } */
@@ -44,7 +45,7 @@ fetchMantelas(firstMantela, maxNest = Infinity)
                 return;
 
             /* Mantela を登録し、訪問済みに追加 */
-            mantelas.set(e.value.aboutMe.identifier, e.value);
+            mantelas.set(e.value.aboutMe.identifier, { mantela: e.value });
             visited.add(current[i]);
             visited.add(e.value.aboutMe.identifier);
         });
@@ -64,5 +65,17 @@ fetchMantelas(firstMantela, maxNest = Infinity)
     }
 
     return mantelas;
+}
+
+/**
+ * Mantela を芋蔓式に取得する（非推奨; c.f.: fetchMantelas2）
+ * @param { string | URL | Request } firstMantela - 起点となる Mantela
+ * @param { number } [maxNest = Infinity] - Mantela を辿る最大深さ
+ */
+async function
+fetchMantelas(firstMantela, maxNest = Infinity)
+{
+    const convert = m => m.entries().map(e => [ e[0], e[1].mantela ]);
+    return new Map(await fetchMantelas2(firstMantela, maxNest).then(convert));
 }
 /* ex: se et ts=4 : */
