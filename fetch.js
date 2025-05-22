@@ -4,10 +4,10 @@
 /**
  * Mantela を芋蔓式に取得する
  * @param { string | URL | Request } firstMantela - 起点となる Mantela
- * @param { number } [maxNest = Infinity] - Mantela を辿る最大深さ
+ * @param { number } [maxDepth = Infinity] - Mantela を辿る最大深さ
  */
 async function
-fetchMantelas2(firstMantela, maxNest = Infinity)
+fetchMantelas2(firstMantela, maxDepth = Infinity)
 {
     /** @type { Map<string, { mantela: Mantela }> } */
     const mantelas = new Map();
@@ -19,10 +19,10 @@ fetchMantelas2(firstMantela, maxNest = Infinity)
     const visited = new Set();
 
     /* 負の深さは許されない */
-    if (maxNest < 0)
+    if (maxDepth < 0)
         throw new RangeError('maxNest must not be negative.');
 
-    for (let nest = 0; queue.size > 0 && nest <= maxNest; nest++) {
+    for (let depth = 0; queue.size > 0 && depth <= maxDepth; depth++) {
         /* いまあるリソースを同時に取得する */
         const current = [ ...queue.values() ];
         const results = await Promise.allSettled(
@@ -45,7 +45,10 @@ fetchMantelas2(firstMantela, maxNest = Infinity)
                 return;
 
             /* Mantela を登録し、訪問済みに追加 */
-            mantelas.set(e.value.aboutMe.identifier, { mantela: e.value });
+            mantelas.set(e.value.aboutMe.identifier, {
+                mantela: e.value,
+                depth: depth,
+            });
             visited.add(current[i]);
             visited.add(e.value.aboutMe.identifier);
         });
