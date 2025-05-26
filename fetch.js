@@ -29,16 +29,17 @@ fetchMantelas2(firstMantela, maxDepth = Infinity)
             current.map(
                 e => fetch(e, { mode: 'cors' })
                         .then(res => res.json())
-                        .catch(err => new Error(err))
             )
         );
         queue.clear();
 
         /* Mantela を登録する */
         results.forEach((e, i) => {
-            /* 失敗していたらとりあえず何もしない */
-            if (e.status === 'rejected')
+            /* 失敗していたらとりあえず console.error に報告して何もしない */
+            if (e.status === 'rejected') {
+                console.error(e.reason);
                 return;
+            }
 
             /* 自分の識別子を持っていないような Mantela は相手にしない */
             if (!e.value?.aboutMe?.identifier)
