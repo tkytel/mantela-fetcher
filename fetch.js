@@ -98,18 +98,13 @@ fetchMantelas3(firstMantela, optArgs = { })
  * Mantela を芋蔓式に取得する（非推奨; c.f.: fetchMantelas3）
  * @param { string | URL | Request } firstMantela - 起点となる Mantela
  * @param { number } [maxDepth = Infinity] - Mantela を辿る最大深さ
- * @param { Error[] } [errs = undefined] - エラーの一覧
  */
 async function
-fetchMantelas2(firstMantela, maxDepth = Infinity, errs = undefined)
+fetchMantelas2(firstMantela, maxDepth = Infinity)
 {
-    const { mantelas, errors } = await fetchMantelas3(firstMantela, {
+    const { mantelas } = await fetchMantelas3(firstMantela, {
         maxDepth: maxDepth,
     });
-    if (Array.isArray(errs)) {
-        errs.length = 0;
-        errors.forEach(e => errs.push(e));
-    }
     return mantelas;
 }
 
