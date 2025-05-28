@@ -37,7 +37,8 @@ fetchMantelas2(firstMantela, maxDepth = Infinity)
         results.forEach((e, i) => {
             /* 失敗していたらとりあえず console.error に報告して何もしない */
             if (e.status === 'rejected') {
-                console.error(e.reason);
+                /* 原因 current[i] と 理由 e.reason */
+                console.error(current[i] + '\n' + e.reason);
                 return;
             }
 
