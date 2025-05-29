@@ -29,6 +29,12 @@ fetchMantelas2(firstMantela, maxDepth = Infinity)
             current.map(
                 e => fetch(e, { mode: 'cors' })
                         .then(res => res.json())
+                        .catch(err => {
+                            throw new Error(
+                                `Something went wrong on ${e}`,
+                                { cause: err },
+                            );
+                        })
             )
         );
         queue.clear();
@@ -37,8 +43,11 @@ fetchMantelas2(firstMantela, maxDepth = Infinity)
         results.forEach((e, i) => {
             /* 失敗していたらとりあえず console.error に報告して何もしない */
             if (e.status === 'rejected') {
-                /* 原因 current[i] と 理由 e.reason */
-                console.error(current[i] + '\n' + e.reason);
+                /*
+                 * 人間向けのエラーメッセージが e.reason.message
+                 * エラーの元の原因が e.reason.cause
+                 */
+                console.error(e.reason.message, '\n', e.reason.cause);
                 return;
             }
 
