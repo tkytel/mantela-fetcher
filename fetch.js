@@ -28,7 +28,24 @@ fetchMantelas2(firstMantela, maxDepth = Infinity)
         const results = await Promise.allSettled(
             current.map(
                 e => fetch(e, { mode: 'cors' })
-                        .then(res => res.json())
+                        .then(res => {
+                            if (!res.ok)
+                                throw new Error(
+                                    `Server responded with code ${res.status}`,
+                                );
+                            return res.json();
+                        })
+                        .catch(err => {
+                            /*
+                             * 全てのエラーはここで整形される
+                             * .message は原因になった mantela の URL
+                             * .cause は実際のエラーを示している
+                             */
+                            throw new Error(
+                                e instanceof Request ? e.url : String(e),
+                                { cause: err }
+                            );
+                        })
             )
         );
         queue.clear();
