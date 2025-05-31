@@ -131,7 +131,6 @@ fetchMantelas(firstMantela, maxNest = Infinity)
 function
 fetchWithTimeout(resource, options = { })
 {
-    console.log(options.timeoutMs)
     if (options?.timeoutMs === undefined)
         return fetch(resource, options);
 
