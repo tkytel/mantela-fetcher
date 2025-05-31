@@ -24,7 +24,7 @@ fetchMantelas3(firstMantela, optArgs = { })
     const maxDepth = optArgs?.maxDepth || Infinity;
 
     /** @type { number } */
-    const timeoutMs = optArgs?.timeoutMs || 5000;
+    const timeoutMs = optArgs?.timeoutMs || undefined;
 
     /* 負の深さは許されない */
     if (maxDepth < 0)
@@ -128,13 +128,13 @@ fetchMantelas(firstMantela, maxNest = Infinity)
  * @param { string | URL | Request } resource - fetch するリソース
  * @param { object } [options = { }] - 追加の引数
  */
-function fetchWithTimeout(
-    resource,
-    options = { }
-) {
+function fetchWithTimeout(resource, options = { }) {
+    if (options.timeoutMs !== undefined && typeof options.timeoutMs !== 'number')
+        return fetch(resource, { ...options});
+
     const controller = new AbortController();
     const signal = controller.signal;
-    const timeout = options.timeoutMs; // デフォルトは 5 秒
+    const timeout = options.timeoutMs;
 
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
