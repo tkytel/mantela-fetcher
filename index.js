@@ -53,7 +53,7 @@ formMantela.addEventListener('submit', async e => {
 				+ '（書式に問題がないか確認してみてください）',
 			AbortError: /* may be thrown by AbortController */
 				'Mantela.json の取得がタイムアウトしました'
-				+ '（URL が正しいか、ネットワークの状態を確認してみてください）',
+				+ '（ネットワークの状態を確認してみてください）',
 		}[e.cause.name] || '不明なエラーです';
 
 		const ddCause = document.createElement('dd');
