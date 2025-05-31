@@ -128,7 +128,9 @@ fetchMantelas(firstMantela, maxNest = Infinity)
  * @param { string | URL | Request } resource - fetch するリソース
  * @param { object } [options = { }] - 追加の引数
  */
-function fetchWithTimeout(resource, options = { }) {
+function
+fetchWithTimeout(resource, options = { })
+{
     if (options.timeoutMs !== undefined && typeof options.timeoutMs !== 'number')
         return fetch(resource, { ...options});
 
