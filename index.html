@@ -63,6 +63,11 @@ Mantela を辿る最大深さを指定します。
 非負の値を指定できます。
 省略された場合、<code>Infinity</code> が指定されたようにふるまいます。
 </p></dd>
+<dt><code>fetchTimeoutMs</code>（省略可）</dt>
+<dd><p>
+各 Mantela の取得に費やすことを許す最大時間をミリ秒単位で指定します。
+省略された場合、制限しません。
+</p></dd>
 </dl>
 </dl>
 </section>
@@ -238,6 +243,14 @@ Mantela を辿る最大深さを指定します。
 <div>
 <label for="numNest">maxNest:</label>
 <input type="number" id="numNest" min="0" step="1" class="fill-inline">
+</div>
+<div>
+<label for="checkTimeout">timeoutMs を指定する:</label>
+<input type="checkbox" id="checkTimeout">
+</div>
+<div>
+<label for="numTimeout">timeoutMs:</label>
+<input type="number" id="numTimeout" min="0" step="1" max="2147483647" class="fill-inline">
 </div>
 <hr>
 <div>

@@ -7,11 +7,15 @@ formMantela.addEventListener('submit', async e => {
 	btnGenerate.disabled = true;
 	const start = performance.now();
 	outputStatus.textContent = '';
-	const { mantelas, errors } = await (_ => checkNest.checked
-		? fetchMantelas3(urlMantela.value, {
-			maxDepth: +numNest.value,
-		})
-		: fetchMantelas3(urlMantela.value))();
+
+	const options = {};
+	if (checkNest.checked)
+		Object.assign(options, { maxDepth: +numNest.value });
+	if (checkTimeout.checked)
+		Object.assign(options, { fetchTimeoutMs: +numTimeout.value });
+
+	const { mantelas, errors } = await fetchMantelas3(urlMantela.value, options);
+	
 	const stop = performance.now();
 	outputStatus.textContent = `Done.  (${stop - start} ms)`;
 	btnGenerate.disabled = false;
@@ -51,6 +55,9 @@ formMantela.addEventListener('submit', async e => {
 			SyntaxError: /* may be thrown by res.json() */
 				'Mantela.json の解釈に失敗した可能性があります'
 				+ '（書式に問題がないか確認してみてください）',
+			AbortError: /* may be thrown by AbortController */
+				'Mantela.json の取得がタイムアウトしました'
+				+ '（ネットワークの状態を確認してみてください）',
 		}[e.cause.name] || '不明なエラーです';
 
 		const ddCause = document.createElement('dd');

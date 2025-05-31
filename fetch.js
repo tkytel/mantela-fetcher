@@ -23,6 +23,9 @@ fetchMantelas3(firstMantela, optArgs = { })
     /** @type { number } */
     const maxDepth = optArgs?.maxDepth || Infinity;
 
+    /** @type { number | undefined } */
+    const fetchTimeoutMs = optArgs?.fetchTimeoutMs;
+
     /* 負の深さは許されない */
     if (maxDepth < 0)
         throw new RangeError('maxNest must not be negative.');
@@ -32,7 +35,7 @@ fetchMantelas3(firstMantela, optArgs = { })
         const current = [ ...queue.values() ];
         const results = await Promise.allSettled(
             current.map(
-                e => fetch(e, { mode: 'cors' })
+                e => fetchWithTimeout(e, { mode: 'cors', timeoutMs: fetchTimeoutMs })
                         .then(res => {
                             if (!res.ok)
                                 throw new Error(
@@ -119,4 +122,29 @@ fetchMantelas(firstMantela, maxNest = Infinity)
     const convert = m => m.entries().map(e => [ e[0], e[1].mantela ]);
     return new Map(await fetchMantelas2(firstMantela, maxNest).then(convert));
 }
+
+/**
+ * fetch にタイムアウト機能を追加する
+ * @param { string | URL | Request } resource - fetch するリソース
+ * @param { object } [options = { }] - 追加の引数
+ */
+function
+fetchWithTimeout(resource, options = { })
+{
+    console.log(options.timeoutMs)
+    if (options?.timeoutMs === undefined)
+        return fetch(resource, options);
+
+    if (typeof options.timeoutMs !== 'number')
+        throw new TypeError('timeoutMs must be a number');
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const timeout = options.timeoutMs;
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    return fetch(resource, { ...options, signal })
+            .finally(() => clearTimeout(timeoutId));
+}
+
 /* ex: se et ts=4 : */
