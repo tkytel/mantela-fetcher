@@ -49,7 +49,7 @@ formMantela.addEventListener('submit', async e => {
 				'Mantela.json の取得に失敗した可能性があります'
 				+ '（正しい URL であるか確認してみてください）',
 			SyntaxError: /* may be thrown by res.json() */
-				'Manela.json の解釈に失敗した可能性があります'
+				'Mantela.json の解釈に失敗した可能性があります'
 				+ '（書式に問題がないか確認してみてください）',
 		}[e.cause.name] || '不明なエラーです';
 
