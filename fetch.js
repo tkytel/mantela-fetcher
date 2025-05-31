@@ -35,7 +35,7 @@ fetchMantelas3(firstMantela, optArgs = { })
         const current = [ ...queue.values() ];
         const results = await Promise.allSettled(
             current.map(
-                e => fetchWithTimeout(e, { mode: 'cors', timeoutMs: timeoutMs })
+                e => fetchWithTimeout(e, { mode: 'cors', timeoutMs })
                         .then(res => {
                             if (!res.ok)
                                 throw new Error(
@@ -131,8 +131,8 @@ fetchMantelas(firstMantela, maxNest = Infinity)
 function
 fetchWithTimeout(resource, options = { })
 {
-    if (options.timeoutMs == undefined && typeof options.timeoutMs !== 'number')
-        return fetch(resource, { ...options});
+    if (!('timeoutMs' in options) || typeof options.timeoutMs !== 'number')
+        return fetch(resource, { ...options });
 
     const controller = new AbortController();
     const signal = controller.signal;
