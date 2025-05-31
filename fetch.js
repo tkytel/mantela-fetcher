@@ -24,7 +24,7 @@ fetchMantelas3(firstMantela, optArgs = { })
     const maxDepth = optArgs?.maxDepth || Infinity;
 
     /** @type { number } */
-    const timeoutMs = optArgs?.timeoutMs;
+    const fetchTimeoutMs = optArgs?.fetchTimeoutMs;
 
     /* 負の深さは許されない */
     if (maxDepth < 0)
@@ -35,7 +35,7 @@ fetchMantelas3(firstMantela, optArgs = { })
         const current = [ ...queue.values() ];
         const results = await Promise.allSettled(
             current.map(
-                e => fetchWithTimeout(e, { mode: 'cors', timeoutMs })
+                e => fetchWithTimeout(e, { mode: 'cors', timeoutMs: fetchTimeoutMs })
                         .then(res => {
                             if (!res.ok)
                                 throw new Error(
@@ -131,8 +131,11 @@ fetchMantelas(firstMantela, maxNest = Infinity)
 function
 fetchWithTimeout(resource, options = { })
 {
-    if (!('timeoutMs' in options) || typeof options.timeoutMs !== 'number')
+    if (!('timeoutMs' in options))
         return fetch(resource, { ...options });
+
+    if (typeof options.timeoutMs !== 'number')
+        throw new TypeError('options.timeoutMs must be a number');
 
     const controller = new AbortController();
     const signal = controller.signal;
