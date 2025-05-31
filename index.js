@@ -51,6 +51,9 @@ formMantela.addEventListener('submit', async e => {
 			SyntaxError: /* may be thrown by res.json() */
 				'Mantela.json の解釈に失敗した可能性があります'
 				+ '（書式に問題がないか確認してみてください）',
+			AbortError: /* may be thrown by AbortController */
+				'Mantela.json の取得がタイムアウトしました'
+				+ '（URL が正しいか、ネットワークの状態を確認してみてください）',
 		}[e.cause.name] || '不明なエラーです';
 
 		const ddCause = document.createElement('dd');
