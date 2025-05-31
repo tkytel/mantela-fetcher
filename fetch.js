@@ -28,11 +28,22 @@ fetchMantelas2(firstMantela, maxDepth = Infinity)
         const results = await Promise.allSettled(
             current.map(
                 e => fetch(e, { mode: 'cors' })
-                        .then(res => res.json())
+                        .then(res => {
+                            if (!res.ok)
+                                throw new Error(
+                                    `Server responded with code ${res.status}`,
+                                );
+                            return res.json();
+                        })
                         .catch(err => {
+                            /*
+                             * 全てのエラーはここで整形される
+                             * .message は原因になった mantela の URL
+                             * .cause は実際のエラーを示している
+                             */
                             throw new Error(
-                                `Something went wrong on ${e}`,
-                                { cause: err },
+                                e instanceof Request ? e.url : String(e),
+                                { cause: err }
                             );
                         })
             )
@@ -43,11 +54,7 @@ fetchMantelas2(firstMantela, maxDepth = Infinity)
         results.forEach((e, i) => {
             /* 失敗していたらとりあえず console.error に報告して何もしない */
             if (e.status === 'rejected') {
-                /*
-                 * 人間向けのエラーメッセージが e.reason.message
-                 * エラーの元の原因が e.reason.cause
-                 */
-                console.error(e.reason.message, '\n', e.reason.cause);
+                console.error(e.reason);
                 return;
             }
 
