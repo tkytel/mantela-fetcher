@@ -139,7 +139,7 @@ function fetchWithTimeout(resource, options = { }) {
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     return fetch(resource, { ...options, signal })
-        .finally(() => clearTimeout(timeoutId));
+            .finally(() => clearTimeout(timeoutId));
 }
 
 /* ex: se et ts=4 : */
