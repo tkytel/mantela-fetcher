@@ -16,8 +16,6 @@ formMantela.addEventListener('submit', async e => {
 	outputStatus.textContent = `Done.  (${stop - start} ms)`;
 	btnGenerate.disabled = false;
 
-	console.debug(mantelas)
-
 	const cloneList = outputList.cloneNode(false);
 	outputList.parentNode.replaceChild(cloneList, outputList);
 	mantelas.forEach((v, k) => {
