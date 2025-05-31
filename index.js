@@ -7,12 +7,16 @@ formMantela.addEventListener('submit', async e => {
 	btnGenerate.disabled = true;
 	const start = performance.now();
 	outputStatus.textContent = '';
-	const mantelas = await (_ => checkNest.checked
-		? fetchMantelas(urlMantela.value, +numNest.value)
-		: fetchMantelas(urlMantela.value))();
+	const { mantelas, errors } = await (_ => checkNest.checked
+		? fetchMantelas3(urlMantela.value, {
+			maxDepth: +numNest.value,
+		})
+		: fetchMantelas3(urlMantela.value))();
 	const stop = performance.now();
 	outputStatus.textContent = `Done.  (${stop - start} ms)`;
 	btnGenerate.disabled = false;
+
+	console.debug(mantelas)
 
 	const cloneList = outputList.cloneNode(false);
 	outputList.parentNode.replaceChild(cloneList, outputList);
@@ -20,9 +24,9 @@ formMantela.addEventListener('submit', async e => {
 		const dt = document.createElement('dt');
 		dt.textContent = k;
 
-		const json = JSON.stringify(v, null, 2);
+		const json = JSON.stringify(v.mantela, null, 2);
 		const summary = document.createElement('summary');
-		summary.textContent = `JSON (${v.aboutMe.name})`;
+		summary.textContent = `JSON (${v.mantela.aboutMe.name})`;
 		const pre = document.createElement('pre');
 		pre.textContent = json;
 		const details = document.createElement('details');
@@ -32,4 +36,29 @@ formMantela.addEventListener('submit', async e => {
 
 		cloneList.append(dt, dd);
 	});
+	const cloneError = outputError.cloneNode(false);
+	outputError.parentNode.replaceChild(cloneError, outputError);
+	errors.forEach(e => {
+		const dt = document.createElement('dt');
+		dt.textContent = e.message;
+
+		const ddNameMesg = document.createElement('dd');
+		ddNameMesg.textContent = {
+			TypeError: /* may be thrown by fetch() */
+				'Mantela.json の取得に失敗した可能性があります'
+				+ '（CORS の設定や HTTP ヘッダを確認してみてください）',
+			Error: /* may be thrown if status code is not OK */
+				'Mantela.json の取得に失敗した可能性があります'
+				+ '（正しい URL であるか確認してみてください）',
+			SyntaxError: /* may be thrown by res.json() */
+				'Manela.json の解釈に失敗した可能性があります'
+				+ '（書式に問題がないか確認してみてください）',
+		}[e.cause.name] || '不明なエラーです';
+
+		const ddCause = document.createElement('dd');
+		ddCause.textContent = String(e.cause);
+
+		cloneError.append(dt, ddNameMesg, ddCause);
+	});
+	summaryError.textContent = `エラー情報（${errors.length} 件）`;
 });
