@@ -23,7 +23,7 @@ fetchMantelas3(firstMantela, optArgs = { })
     /** @type { number } */
     const maxDepth = optArgs?.maxDepth || Infinity;
 
-    /** @type { number } */
+    /** @type { number | undefined } */
     const fetchTimeoutMs = optArgs?.fetchTimeoutMs;
 
     /* 負の深さは許されない */
@@ -131,16 +131,16 @@ fetchMantelas(firstMantela, maxNest = Infinity)
 function
 fetchWithTimeout(resource, options = { })
 {
-    if (!('timeoutMs' in options))
-        return fetch(resource, { ...options });
+    console.log(options.timeoutMs)
+    if (options?.timeoutMs === undefined)
+        return fetch(resource, options);
 
     if (typeof options.timeoutMs !== 'number')
-        throw new TypeError('options.timeoutMs must be a number');
+        throw new TypeError('timeoutMs must be a number');
 
     const controller = new AbortController();
     const signal = controller.signal;
     const timeout = options.timeoutMs;
-
     const timeoutId = setTimeout(() => controller.abort(), timeout);
 
     return fetch(resource, { ...options, signal })
