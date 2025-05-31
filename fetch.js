@@ -24,7 +24,7 @@ fetchMantelas3(firstMantela, optArgs = { })
     const maxDepth = optArgs?.maxDepth || Infinity;
 
     /** @type { number } */
-    const timeoutMs = optArgs?.timeoutMs || undefined;
+    const timeoutMs = optArgs?.timeoutMs;
 
     /* 負の深さは許されない */
     if (maxDepth < 0)
