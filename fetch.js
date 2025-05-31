@@ -131,7 +131,7 @@ fetchMantelas(firstMantela, maxNest = Infinity)
 function
 fetchWithTimeout(resource, options = { })
 {
-    if (options.timeoutMs == undefined && typeof options.timeoutMs == 'number')
+    if (options.timeoutMs == undefined && typeof options.timeoutMs !== 'number')
         return fetch(resource, { ...options});
 
     const controller = new AbortController();
