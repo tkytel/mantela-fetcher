@@ -21,14 +21,16 @@ fetchMantelas3(firstMantela, optArgs = { })
     const errors = [ ];
 
     /** @type { number } */
-    const maxDepth = optArgs?.maxDepth || Infinity;
+    const maxDepth = 'maxDepth' in optArgs ? optArgs.maxDepth : Infinity;
+    /* number 以外は許されない */
+    if (typeof maxDepth !== 'number')
+        throw new TypeError('optArgs.maxDepth must be number');
+    /* 負の深さは許されない */
+    if (maxDepth < 0)
+        throw new RangeError('optArgs.maxDepth must not be negative');
 
     /** @type { number | undefined } */
     const fetchTimeoutMs = optArgs?.fetchTimeoutMs;
-
-    /* 負の深さは許されない */
-    if (maxDepth < 0)
-        throw new RangeError('maxNest must not be negative.');
 
     for (let depth = 0; queue.size > 0 && depth <= maxDepth; depth++) {
         /* いまあるリソースを同時に取得する */
