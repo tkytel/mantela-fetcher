@@ -140,7 +140,7 @@ fetchWithTimeout(resource, options = { })
         return fetch(resource, options);
 
     if (typeof options.timeoutMs !== 'number')
-        throw new TypeError('timeoutMs must be a number');
+        throw new TypeError('options.timeoutMs must be a number or undefined');
 
     const controller = new AbortController();
     const signal = controller.signal;
