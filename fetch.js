@@ -3,12 +3,15 @@
 /**
  * Mantela を芋蔓式に取得する
  * @param { string | URL | Request } firstMantela - 起点となる Mantela
- * @param { object } [optArgs = { }] - 追加の引数
+ * @param { FetchMantelas3Options } [optArgs = { }] - 追加の引数
+ * @typedef { object } FetchMantelas3Options
+ * @property { number } [maxDepth] - Mantela を辿る最大深さ
+ * @property { number } [fetchTimeoutMs] - 各 Mantela の取得に費やす最大時間（ミリ秒）
  */
 async function
 fetchMantelas3(firstMantela, optArgs = { })
 {
-    /** @type { Map<string, { mantela: Mantela }> } */
+    /** @type { Map<string, { mantela: Mantela, [key: string]: unknown }> } */
     const mantelas = new Map();
 
     /** @type { Set<string | URL | Request> } */
@@ -131,7 +134,9 @@ fetchMantelas(firstMantela, maxNest = Infinity)
 /**
  * fetch にタイムアウト機能を追加する
  * @param { string | URL | Request } resource - fetch するリソース
- * @param { object } [options = { }] - 追加の引数
+ * @param { FetchWithTimeoutOptions & RequestInit } [options = { }] - 追加の引数
+ * @typedef { object } FetchWithTimeoutOptions
+ * @property { number } [timeoutMs] - Mantela の取得に費やす最大時間（ミリ秒）
  */
 function
 fetchWithTimeout(resource, options = { })
