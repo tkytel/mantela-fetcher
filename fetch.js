@@ -31,6 +31,9 @@ fetchMantelas3(firstMantela, optArgs = { })
 
     /** @type { number | undefined } */
     const fetchTimeoutMs = optArgs?.fetchTimeoutMs;
+    /* undefined でなければ number 以外は許されない */
+    if (fetchTimeoutMs !== undefined && typeof fetchTimeoutMs !== 'number')
+        throw new TypeError('optArgs.fetchTimeoutMs must be number or undefined');
 
     for (let depth = 0; queue.size > 0 && depth <= maxDepth; depth++) {
         /* いまあるリソースを同時に取得する */
