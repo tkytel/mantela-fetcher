@@ -7,6 +7,10 @@
  * @typedef { object } FetchMantelas3Options
  * @property { number } [maxDepth] - Mantela を辿る最大深さ
  * @property { number } [fetchTimeoutMs] - 各 Mantela の取得に費やす最大時間（ミリ秒）
+ * @property { 'default' | 'no-store' | 'reload' | 'no-cache' | 'force-cache' | 'only-if-cached' }
+ *  [cache] - キャッシュモード
+ * @property { 'same-origin' | 'cors' | 'no-cors' | 'navigate' }
+ *  [mode] - オリジン間リクストの動作設定
  */
 async function
 fetchMantelas3(firstMantela, optArgs = { })
@@ -41,9 +45,14 @@ fetchMantelas3(firstMantela, optArgs = { })
     for (let depth = 0; queue.size > 0 && depth <= maxDepth; depth++) {
         /* いまあるリソースを同時に取得する */
         const current = [ ...queue.values() ];
+        const options = {
+            cache: optArgs?.cache || 'default',
+            mode: optArgs?.mode || 'cors',
+            timeoutMs: fetchTimeoutMs,
+        };
         const results = await Promise.allSettled(
             current.map(
-                e => fetchWithTimeout(e, { mode: 'cors', timeoutMs: fetchTimeoutMs })
+                e => fetchWithTimeout(e, options)
                         .then(res => {
                             if (!res.ok)
                                 throw new Error(
