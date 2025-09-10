@@ -68,6 +68,16 @@ Mantela を辿る最大深さを指定します。
 各 Mantela の取得に費やすことを許す最大時間をミリ秒単位で指定します。
 省略された場合、制限しません。
 </p></dd>
+<dt><code>cache</code>（省略可）</dt>
+<dd><p>
+各 Mantela を取得する際のキャッシュモードを指定します。
+省略された場合、<code>'default'</code> が指定されたようにふるまいます。
+</p></dd>
+<dt><code>mode</code>（省略可）</dt>
+<dd><p>
+各 Mantela を取得する際のオリジン間リクエストの動作を指定します。
+省略された場合、<code>'cors'</code> が指定されたようにふるまいます。
+</p></dd>
 </dl>
 </dl>
 </section>
@@ -251,6 +261,28 @@ Mantela を辿る最大深さを指定します。
 <div>
 <label for="numTimeout">timeoutMs:</label>
 <input type="number" id="numTimeout" min="0" step="1" max="2147483647" class="fill-inline">
+</div>
+<div>
+<label for="selectCache">cache:</label>
+<select id="selectCache" class="fill-inline">
+<option value="">（指定なし）</option>
+<option>default</option>
+<option>no-store</option>
+<option>reload</option>
+<option>no-cache</option>
+<option>force-cache</option>
+<option>only-if-cached</option>
+</select>
+</div>
+<div>
+<label for="selectMode">mode:</label>
+<select id="selectMode" class="fill-inline">
+<option value="">（指定なし）</option>
+<option>same-origin</option>
+<option>cors</option>
+<option>no-cors</option>
+<option>navigate</option>
+</select>
 </div>
 <hr>
 <div>

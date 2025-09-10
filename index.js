@@ -13,6 +13,10 @@ formMantela.addEventListener('submit', async e => {
 		Object.assign(options, { maxDepth: +numNest.value });
 	if (checkTimeout.checked)
 		Object.assign(options, { fetchTimeoutMs: +numTimeout.value });
+	if (selectCache.value !== '')
+		Object.assign(options, { cache: selectCache.value });
+	if (selectMode.value !== '')
+		Object.assign(options, { cache: selectMode.value });
 
 	const { mantelas, errors } = await fetchMantelas3(urlMantela.value, options);
 	
