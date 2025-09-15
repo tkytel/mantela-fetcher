@@ -18,8 +18,11 @@ fetchMantelas3(firstMantela, optArgs = { })
     /** @type { Map<string, { mantela: Mantela, [key: string]: unknown }> } */
     const mantelas = new Map();
 
-    /** @type { Set<string | URL | Request> } */
-    const queue = new Set([ firstMantela ]);
+    /** @type { Set<{ url: string | URL | Request, rev: string | URL | Request > } */
+    const queue = new Set([ {
+        url: firstMantela,      /* Mantela の URL */
+        rev: 'firstMantela',    /* その Mantela を参照した人の URL */
+    } ]);
 
     /** @type { Set<string | URL | Request> } */
     const visited = new Set();
@@ -52,7 +55,7 @@ fetchMantelas3(firstMantela, optArgs = { })
         };
         const results = await Promise.allSettled(
             current.map(
-                e => fetchWithTimeout(e, options)
+                e => fetchWithTimeout(e.url, options)
                         .then(res => {
                             if (!res.ok)
                                 throw new Error(
@@ -66,8 +69,10 @@ fetchMantelas3(firstMantela, optArgs = { })
                              * .message は原因になった mantela の URL
                              * .cause は実際のエラーを示している
                              */
+                            const u = e.url instanceof Request ? e.url.url : String(e.url);
+                            const r = e.rev instanceof Request ? e.rev.url : String(e.rev);
                             throw new Error(
-                                e instanceof Request ? e.url : String(e),
+                                `${u} (referenced by ${r})`,
                                 { cause: err }
                             );
                         })
@@ -103,10 +108,12 @@ fetchMantelas3(firstMantela, optArgs = { })
             if (!e.value?.providers)
                 return;
 
+            const c = current[i];
+            const rev = c.url instanceof Request ? c.url.url : String(c.url);
             e.value.providers.forEach(e => {
                 if (e?.mantela && !visited.has(e.mantela)
                         && e?.identifier && !visited.has(e.identifier))
-                    queue.add(e.mantela);
+                    queue.add({ url: e.mantela, rev });
             });
         });
     }
