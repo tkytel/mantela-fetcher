@@ -80,6 +80,27 @@ fetchMantelas3(firstMantela, optArgs = { })
         );
         queue.clear();
 
+        /* Mantelas を展開する（長さが変わるので forEach を使えない） */
+        for (let i = 0; i < results.length; i++) {
+            const e = results[i];
+            /* 失敗は登録の段で処理するのでここでは何もしない */
+            if (e.status === 'rejected')
+                continue;
+            /* 有効っぽそうな Mantelas を持っていれば、展開して置き換える */
+            if ('mantelas' in e.value && Array.isArray(e.value.mantelas)) {
+                /* 展開されて増える要素の数 */
+                const d = e.value.mantelas.length - 1;
+                /* results を展開する */
+                results.splice(i, 1, ...e.value.mantelas.map(
+                    value => ({ status: e.status, value })
+                ));
+                /* 展開された分を current に挿入する */
+                current.splice(i, 0, ...Array(d).fill(current[i]));
+                /* 増えた分は飛ばしていい */
+                i += d;
+            }
+        }
+
         /* Mantela を登録する */
         results.forEach((e, i) => {
             /* 失敗していたらとりあえず console.error に報告して何もしない */
